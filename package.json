@@ -1,0 +1,36 @@
+{
+  "name": "frontend-project-lvl2",
+  "version": "1.0.0",
+  "description": "second project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
+  },
+  "bin": {
+    "brain-even": "dist/bin/gendiff.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickKrsk/frontend-project-lvl2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NickKrsk/frontend-project-lvl2/issues"
+  },
+  "homepage": "https://github.com/NickKrsk/frontend-project-lvl2#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/node": "^7.8.3",
+    "@babel/preset-env": "^7.8.3"
+  },
+  "dependencies": {
+    "commander": "^4.1.0"
+  }
+}

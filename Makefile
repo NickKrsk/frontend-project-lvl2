@@ -8,3 +8,5 @@ start:
 	npx babel-node src/bin/gendiff.js
 link:
 	npm link
+test:
+	npx jest

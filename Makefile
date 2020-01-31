@@ -10,5 +10,8 @@ link:
 	npm link
 test:
 	npx jest
+testWatch:
+	npx jest --watch
 lint:
 	npx eslint .
+	

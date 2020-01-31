@@ -1,4 +1,4 @@
-install:
+install-deps:
 	npm install
 installBabel:
 	npm install --save-dev @babel/core @babel/cli @babel/node @babel/preset-env
@@ -9,7 +9,7 @@ start:
 link:
 	npm link
 test:
-	npx jest
+	npm test
 testWatch:
 	npx jest --watch
 lint:

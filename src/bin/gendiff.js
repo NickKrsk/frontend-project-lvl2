@@ -16,4 +16,3 @@ program
 program.parse(process.argv);
 
 console.log('hello');
-console.log(__dirname);

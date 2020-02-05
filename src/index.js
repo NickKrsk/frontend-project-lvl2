@@ -1,25 +1,21 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import path from 'path';
+import ini from 'ini';// let ini = require('ini'); //
 
 import compareData from './parsers';
 
 const mapping = {
   yml: yaml.safeLoad,
-  json: JSON.parse
+  json: JSON.parse,
+  ini: ini.parse,
 };
 
-export default (path1, path2) => {
-  const dataBefore = fs.readFileSync(path1);
-  const dataAfter = fs.readFileSync(path2);
-  const extensionAfter = path.parse(path1).ext.toLowerCase().slice(1);
-  const extensionBefore = path.parse(path2).ext.toLowerCase().slice(1);
+export default (path1, path2, format) => {
+  const dataBefore = fs.readFileSync(path1, 'utf8');
+  const dataAfter = fs.readFileSync(path2, 'utf8');
 
-  if(extensionAfter !== extensionBefore) {
-    throw new Error('different extensions');
-  }
-
-  const objBefore = mapping[extensionAfter](dataBefore);
-  const objAfter = mapping[extensionAfter](dataAfter);
+  const parse = mapping[format];
+  const objBefore = parse(dataBefore);
+  const objAfter = parse(dataAfter);
   return compareData(objBefore, objAfter);
 };

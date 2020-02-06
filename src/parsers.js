@@ -5,9 +5,9 @@ const render = (parsedArray) => {
     console.log('empty');
     return '';
   }
-  const resultArray = parsedArray.reduce((acc, el) => {
-    const currentDiff = el.diff === '' ? '    ' : `  ${el.diff} `;
-    acc.push(`${currentDiff}${el.name}: ${el.value}`);
+  const resultArray = parsedArray.reduce((acc, node) => {
+    const currentDiff = node.diff === '' ? '    ' : `  ${node.diff} `;
+    acc.push(`${currentDiff}${node.name}: ${node.value}`);
     return acc;
   }, []);
 
@@ -18,45 +18,41 @@ const render = (parsedArray) => {
 export default (objBefore, objAfter) => {
   const allKeys = Object.keys({ ...objBefore, ...objAfter }).sort();
   const parsedArray = allKeys.reduce((acc, key) => {
+    const node = {
+      name: key,
+      diff: '',
+    };
+
     if (!_.has(objBefore, key)) {
-      // key not found in data1
-      // acc[`+ ${key}`] = objAfter[key];
-      acc.push({
-        name: key,
-        value: objAfter[key],
-        diff: '+',
-      });
+      // 1. key is not found in data1
+      node.value = objAfter[key];
+      node.diff = 'add';
+
+      if(typeof (valueAfter) === 'object') {
+        node.children = valueAfter;
+      }
     } else if (!_.has(objAfter, key)) {
-      // key not found in data2`);
-      // acc[`- ${key}`] = objBefore[key];
-      acc.push({
-        name: key,
-        value: objBefore[key],
-        diff: '-',
-      });
+      // 2. key is not found in data2`;
+      node.value = objBefore[key];
+      node.diff = 'remove';
+      if (typeof (valueBefore) === 'object') {
+        node.children = valueBefore;
+      }
     } else if (objBefore[key] !== objAfter[key]) {
+      // 3. key is found in both objects 
       // key a different in data1 and data2`);
-      // acc[`- ${key}`] = objBefore[key];
-      // acc[`+ ${key}`] = objAfter[key];
-      acc.push({
-        name: key,
-        value: objBefore[key],
-        diff: '-',
-      });
-      acc.push({
-        name: key,
-        value: objAfter[key],
-        diff: '+',
-      });
-    } else {
-      // equals;
-      // acc[key] = objBefore[key];
-      acc.push({
-        name: key,
-        value: objAfter[key],
-        diff: '',
-      });
+      const valueAfter = objAfter[key];
+      const valueBefore = objBefore[key];
+
+      if(valueBefore !== 'object' && valueAfter !== 'object') {
+      // flat
+        if(valueBefore !== valueAfter) {
+          node.diff = 'changed';   
+          node.value = valueBefore; 
+        }
+      }
     }
+    acc.push(node);
     return acc;
   }, []);
   const result = render(parsedArray);

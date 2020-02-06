@@ -4,7 +4,7 @@ import compareFiles from '../src';
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const readFileSync = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
-
+/*
 test('compare JSON', () => {
   const pathToFile1 = getFixturePath('after.json');
   const pathToFile2 = getFixturePath('before.json');
@@ -26,5 +26,14 @@ test('compare ini', () => {
   const pathToFile2 = getFixturePath('before.ini');
   const expectedResult = readFileSync('result.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'ini');
+  expect(result).toEqual(expectedResult);
+});
+*/
+
+test('compar deep', () => {
+  const pathToFile1 = getFixturePath('beforeDeep.json');
+  const pathToFile2 = getFixturePath('afterDeep.json');
+  const expectedResult = readFileSync('result.txt'); 
+  const result = compareFiles(pathToFile1, pathToFile2, 'json');
   expect(result).toEqual(expectedResult);
 });

@@ -6,8 +6,23 @@ const render = (parsedArray) => {
     return '';
   }
   const resultArray = parsedArray.reduce((acc, node) => {
-    const currentDiff = node.diff === '' ? '    ' : `  ${node.diff} `;
-    acc.push(`${currentDiff}${node.name}: ${node.value}`);
+    if (node.diff === 'add') {
+      acc.push(`+ ${node.name}: ${node.valueAfter}`);
+    }
+
+    if (node.diff === 'remove') {
+      acc.push(`- ${node.name}: ${node.valueBefore}`);
+    }
+
+    if (node.diff === 'equals') {
+      acc.push(`${node.name}: ${node.valueAfter}`);
+    }
+    
+    if (node.children !== []) {
+      const deepValue = render(node.children);
+      acc.push(`    ${deepValue}`);
+    }
+    
     return acc;
   }, []);
 
@@ -15,28 +30,34 @@ const render = (parsedArray) => {
   return `{\n${resultStr}\n}`;
 };
 
-export default (objBefore, objAfter) => {
+const parse = (objBefore, objAfter) => {
   const allKeys = Object.keys({ ...objBefore, ...objAfter }).sort();
+  //console.log(allKeys);
   const parsedArray = allKeys.reduce((acc, key) => {
     const node = {
       name: key,
+      valueBefore: '',
+      valueAfter: '',
       diff: '',
+      children: [],
     };
 
     if (!_.has(objBefore, key)) {
       // 1. key is not found in data1
-      node.value = objAfter[key];
+      const valueAfter = objAfter[key];
+      node.valueAfter = valueAfter;
       node.diff = 'add';
 
-      if(typeof (valueAfter) === 'object') {
-        node.children = valueAfter;
+      if (typeof (valueAfter) === 'object') {
+        node.children.add(valueAfter);
       }
     } else if (!_.has(objAfter, key)) {
       // 2. key is not found in data2`;
-      node.value = objBefore[key];
+      const valueBefore = objBefore[key]; 
+      node.valueBefore = valueBefore;
       node.diff = 'remove';
       if (typeof (valueBefore) === 'object') {
-        node.children = valueBefore;
+        node.children.add(valueBefore);
       }
     } else if (objBefore[key] !== objAfter[key]) {
       // 3. key is found in both objects 
@@ -44,17 +65,27 @@ export default (objBefore, objAfter) => {
       const valueAfter = objAfter[key];
       const valueBefore = objBefore[key];
 
-      if(valueBefore !== 'object' && valueAfter !== 'object') {
-      // flat
-        if(valueBefore !== valueAfter) {
-          node.diff = 'changed';   
-          node.value = valueBefore; 
-        }
+      node.valueAfter = valueAfter;
+      node.valueBefore = valueBefore;
+
+      if (typeof (valueAfter) !== 'object' && typeof (valueAfter) !== 'object') {
+        // flat
+        node.diff = valueAfter === valueBefore ? 'equals' : 'changed';
+      } else if (typeof (valueBefore) === 'object' && typeof (valueAfter) === 'object') {
+        node.diff = 'deep';
+        node.children = parse(valueBefore, valueAfter);
+      } else {
+        node.diff = 'changed';
       }
     }
-    acc.push(node);
-    return acc;
+    return [...acc, node];
   }, []);
+  return parsedArray;
+}
+
+export default (objBefore, objAfter) => {
+
+  const parsedArray = parse(objBefore, objAfter);
   const result = render(parsedArray);
   console.log(result);
   // const resultStr = JSON.stringify(resultJSON, null, ' ');

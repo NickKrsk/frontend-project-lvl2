@@ -15,3 +15,5 @@ testWatch:
 lint:
 	npx eslint .
 	
+
+	gendiff '/home/nikita/frontend-project-lvl2/fixtures/before.json' '/home/nikita/frontend-project-lvl2/fixtures/after.json'

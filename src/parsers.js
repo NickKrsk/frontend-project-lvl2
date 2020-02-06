@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const toString = (parsedArray) => {
+const render = (parsedArray) => {
   if (parsedArray.length === 0) {
     console.log('empty');
     return '';
@@ -59,7 +59,7 @@ export default (objBefore, objAfter) => {
     }
     return acc;
   }, []);
-  const result = toString(parsedArray);
+  const result = render(parsedArray);
   console.log(result);
   // const resultStr = JSON.stringify(resultJSON, null, ' ');
   return result;

@@ -33,7 +33,7 @@ test('compare ini', () => {
 test('compar deep', () => {
   const pathToFile1 = getFixturePath('beforeDeep.json');
   const pathToFile2 = getFixturePath('afterDeep.json');
-  const expectedResult = readFileSync('result.txt'); 
+  const expectedResult = readFileSync('resultDeep.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'json');
-  //expect(result).toEqual(expectedResult);
+  expect(result).toEqual(expectedResult);
 });

@@ -1,46 +1,50 @@
 import _ from 'lodash';
 
-const stringify = value => {
+const shift = '    ';
 
+const stringify = (value, deep) => {
+  const currentDeep = deep + 2;
+  const shift1 = shift.repeat(currentDeep - 1);
+  const currentShift = shift.repeat(currentDeep);
   if (typeof (value) !== 'object') {
     return value;
   }
   const result = Object.keys(value).reduce((acc, key) => {
     const res = value[key];
-    return [...acc, `${key}: ${res}`];
+    return [...acc, `${currentShift}${key}: ${res}`];
   }, []).join('\n');
-  return `{\n${result}\n}`;
+  return `{\n${result}\n${currentShift}}`;
 };
 
 const convertDiffTypeToSymbol = diffType => {
   switch(diffType) {
     case 'add':
-      return '+';
+      return '  + ';
     case 'remove':
-      return '-';
+      return '  - ';
     default:
-      return ' ';
+      return '    ';
   }
 };
 
 
-const render = (parsedArray, deep = 1) => {
-  const indent = "    ".repeat(deep);
+const render = (parsedArray, deep = 0) => {
+  const currentShift = shift.repeat(deep);
   const resultArray = parsedArray.reduce((acc, node) => {
-    const diffSymbol = convertDiffTypeToSymbol(node.diff);
+    const diffSymbol = convertDiffTypeToSymbol(node.diffType);
     if (node.children.length > 0) {
-      const deepValue = render(node.children, deep + 1);
-      return [...acc, `${indent}${diffSymbol} ${node.name}: {\n${deepValue}\n}`];
+      const deepValue = render(node.children, deep);
+      return [...acc, `${currentShift}${diffSymbol}${node.name}: {\n${deepValue}\n}`];
     }
-    const value = node.diff === 'remove' ? node.valueBefore : node.valueAfter;
-    const strValue = stringify(value);
+    const value = node.diffType === 'remove' ? node.valueBefore : node.valueAfter;
+    const strValue = stringify(value, deep + 1);
 
-    if (node.diff !== 'changed') {
-      return [...acc, `${indent}${diffSymbol} ${node.name}: ${strValue}`];
+    if (node.diffType !== 'changed') {
+      return [...acc, `${currentShift}${diffSymbol}${node.name}: ${strValue}`];
     }
-    const valueBefore = stringify(node.valueBefore);
-    const valueAfter = stringify(node.valueAfter);
-    return [...acc, `${indent}- ${node.name}: ${valueBefore}`, `+ ${node.name}: ${valueAfter}`];
+    const valueBefore = stringify(node.valueBefore, deep);
+    const valueAfter = stringify(node.valueAfter, deep);
+    return [...acc, `${currentShift}  - ${node.name}: ${valueBefore}`, `${currentShift}  + ${node.name}: ${valueAfter}`];
   }, []);
 
   const resultStr = resultArray.join('\n');
@@ -55,7 +59,7 @@ const parse = (objBefore, objAfter) => {
       name: key,
       valueBefore: '',
       valueAfter: '',
-      diff: '',
+      diffType: '',
       children: [],
     };
 
@@ -63,16 +67,16 @@ const parse = (objBefore, objAfter) => {
       // 1. key is not found in data1
       const valueAfter = objAfter[key];
       node.valueAfter = valueAfter;
-      node.diff = 'add';
+      node.diffType = 'add';
 
       if (typeof (valueAfter) === 'object') {
         node.children = parse(valueAfter, valueAfter);
       }
     } else if (!_.has(objAfter, key)) {
       // 2. key is not found in data2`;
-      const valueBefore = objBefore[key]; 
+      const valueBefore = objBefore[key];
       node.valueBefore = valueBefore;
-      node.diff = 'remove';
+      node.diffType = 'remove';
       if (typeof (valueBefore) === 'object') {
         node.children = parse(valueBefore, valueBefore);
       }
@@ -87,14 +91,14 @@ const parse = (objBefore, objAfter) => {
 
       if (typeof (valueAfter) !== 'object' && typeof (valueAfter) !== 'object') {
         // flat
-        node.diff = valueAfter === valueBefore ? 'equals' : 'changed';
+        node.diffType = valueAfter === valueBefore ? 'equals' : 'changed';
       } else if (typeof (valueBefore) === 'object' && typeof (valueAfter) === 'object') {
         node.diff = 'deep';
         const child = parse(valueBefore, valueAfter);
         node.children = child;
         //if (node.name === 'setting6') console.log(node.children);
       } else {
-        node.diff = 'changed';
+        node.diffType = 'changed';
       }
     }
     return [...acc, node];
@@ -105,6 +109,7 @@ const parse = (objBefore, objAfter) => {
 
 export default (objBefore, objAfter) => {
   const parsedArray = parse(objBefore, objAfter);
+  console.log(parsedArray);
   const result = render(parsedArray);
   const result1 = `{\n${result}\n}`;
   console.log(result1);

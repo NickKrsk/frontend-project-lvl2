@@ -1,20 +1,38 @@
-const getDescribe = diffType => {
-  switch (diffType) {
+const stringify = (value) => {
+  if (typeof (value) !== 'object') {
+    return value;
+  }
+  return '[complex value]';
+};
+
+const getDescribe = (node, propertyPath) => {
+  const valueBefore = stringify(node.valueBefore);
+  const valueAfter = stringify(node.valueAfter);
+  switch (node.diffType) {
     case 'add':
-      return 'was added';
+      return `Property '${propertyPath}' was added with value: ${valueAfter}`;
     case 'remove':
-      return 'was deleted';
+      return `Property '${propertyPath}' was deleted`;
+    case 'changed':
+      return `Property '${propertyPath}' was changed from ${valueBefore} to ${valueAfter}`;
     default:
       return '';
   }
 };
 
-const parse = (parsedArray) => {
+const render = (parsedArray, path) => {
   return parsedArray.reduce((acc, node) => {
-    const describe = getDescribe(node.diffType);
-    const comment = `Property '${node.name}' ${describe}`;
-    return [...acc, comment];
+    if (node.children.length > 0 && node.diffType !== 'add' && node.diffType !== 'remove') {
+      const childComment = render(node.children, [...path, node.name]);
+      return [...acc, childComment];
+    }
+    const propertyPath = [...path, node.name].join('.');
+    const describe = getDescribe(node, propertyPath);
+    if (describe === '') {
+      return acc;
+    }
+    return [...acc, describe];
   }, []).join('\n');
 };
 
-export default (parsedArray) => parse(parsedArray);
+export default (parsedArray) => render(parsedArray, []);

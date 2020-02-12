@@ -41,7 +41,7 @@ const parse = (objBefore, objAfter) => {
         // flat
         node.diffType = valueAfter === valueBefore ? 'equals' : 'changed';
       } else if (typeof (valueBefore) === 'object' && typeof (valueAfter) === 'object') {
-        node.diff = 'deep';
+        node.diffType = 'deep';
         const child = parse(valueBefore, valueAfter);
         node.children = child;
         //if (node.name === 'setting6') console.log(node.children);

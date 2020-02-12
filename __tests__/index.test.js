@@ -53,11 +53,20 @@ test('compare deep YML', () => {
   expect(result).toEqual(expectedResult);
 });
 
-
-test('compare deep json plain', () => {
+test('compare deep txt plain', () => {
   const pathToFile1 = getFixturePath('beforeDeep.json');
   const pathToFile2 = getFixturePath('afterDeep.json');
   const expectedResult = readFileSync('resultPlain.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'json', 'plain');
+  //console.log(result);
   expect(result).toEqual(expectedResult);
 });
+
+test('compare deep json', () => {
+  const pathToFile1 = getFixturePath('beforeDeep.json');
+  const pathToFile2 = getFixturePath('afterDeep.json');
+  const expectedResult = readFileSync('resultJSON.txt');
+  const result = compareFiles(pathToFile1, pathToFile2, 'json', 'json');
+  //console.log(result);
+  expect(result).toEqual(expectedResult);
+})

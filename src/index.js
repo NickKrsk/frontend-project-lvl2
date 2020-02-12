@@ -1,10 +1,11 @@
 import fs from 'fs';
 import yaml from 'js-yaml';
-import ini from 'ini';// let ini = require('ini'); //
+import ini from 'ini';
 
 import compareData from './parsers';
-import jsonRender from './formatters/json-formater';
+import txtRender from './formatters/txt-formatter';
 import plainRender from './formatters/plain-formatter';
+import jsonRender from './formatters/json-formatter';
 
 const mappingFileType = {
   yml: yaml.safeLoad,
@@ -13,11 +14,12 @@ const mappingFileType = {
 };
 
 const mappingFormat = {
-  json: jsonRender,
+  txt: txtRender,
   plain: plainRender,
+  json: jsonRender,
 };
 
-export default (path1, path2, fileType, format = 'json') => {
+export default (path1, path2, fileType, format = 'txt') => {
   const dataBefore = fs.readFileSync(path1, 'utf8');
   const dataAfter = fs.readFileSync(path2, 'utf8');
 

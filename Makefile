@@ -1,8 +1,15 @@
+  
+install: install-deps
+
 install-deps:
 	npm install
-	
+
 installBabel:
 	npm install --save-dev @babel/core @babel/cli @babel/node @babel/preset-env
+
+build:
+	rm -rf dist
+	npm run build
 
 publish:
 	rm -rf dist

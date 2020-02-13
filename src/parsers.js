@@ -44,14 +44,12 @@ const parse = (objBefore, objAfter) => {
         node.diffType = 'deep';
         const child = parse(valueBefore, valueAfter);
         node.children = child;
-        // if (node.name === 'setting6') console.log(node.children);
       } else {
         node.diffType = 'changed';
       }
     }
     return [...acc, node];
   }, []);
-  // console.log(parsedArray);
   return parsedArray; // массив распарсенных узлов
 };
 

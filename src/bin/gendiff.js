@@ -11,12 +11,10 @@ program
   .arguments('<path1> <path2>')
   .action((path1, path2) => {
     console.log(`${path1} ${path2}`);
-    if (program.format) console.log(`format fgfgfg: ${program.format}`);
+    if (program.format) console.log(`format: ${program.format}`);
     const result = compareFiles(path1, path2, program.type, program.format);
     console.log(result);
   });
 program.parse(process.argv);
 
 console.log('hello');
-
-//if (program.format) console.log(`format: ${program.format}`);

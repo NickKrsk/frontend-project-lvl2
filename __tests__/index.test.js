@@ -8,7 +8,7 @@ const readFileSync = (filename) => fs.readFileSync(getFixturePath(filename), 'ut
 test('compare JSON', () => {
   const pathToFile1 = getFixturePath('after.json');
   const pathToFile2 = getFixturePath('before.json');
-  const expectedResult = readFileSync('result.txt'); 
+  const expectedResult = readFileSync('result.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'json');
   expect(result).toEqual(expectedResult);
 });
@@ -58,7 +58,6 @@ test('compare deep txt plain', () => {
   const pathToFile2 = getFixturePath('afterDeep.json');
   const expectedResult = readFileSync('resultPlain.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'json', 'plain');
-  //console.log(result);
   expect(result).toEqual(expectedResult);
 });
 
@@ -67,6 +66,5 @@ test('compare deep json', () => {
   const pathToFile2 = getFixturePath('afterDeep.json');
   const expectedResult = readFileSync('resultJSON.txt');
   const result = compareFiles(pathToFile1, pathToFile2, 'json', 'json');
-  //console.log(result);
   expect(result).toEqual(expectedResult);
-})
+});

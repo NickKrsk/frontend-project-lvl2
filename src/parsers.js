@@ -29,7 +29,7 @@ const parse = (objBefore, objAfter) => {
         node.children = parse(valueBefore, valueBefore);
       }
     } else {
-      // 3. key is found in both objects 
+      // 3. key is found in both objects
       // key a different in data1 and data2`);
       const valueAfter = objAfter[key];
       const valueBefore = objBefore[key];
@@ -44,14 +44,14 @@ const parse = (objBefore, objAfter) => {
         node.diffType = 'deep';
         const child = parse(valueBefore, valueAfter);
         node.children = child;
-        //if (node.name === 'setting6') console.log(node.children);
+        // if (node.name === 'setting6') console.log(node.children);
       } else {
         node.diffType = 'changed';
       }
     }
     return [...acc, node];
   }, []);
-  //console.log(parsedArray);
+  // console.log(parsedArray);
   return parsedArray; // массив распарсенных узлов
 };
 

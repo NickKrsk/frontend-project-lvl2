@@ -20,19 +20,17 @@ const getDescribe = (node, propertyPath) => {
   }
 };
 
-const render = (parsedArray, path) => {
-  return parsedArray.reduce((acc, node) => {
-    if (node.children.length > 0 && node.diffType !== 'add' && node.diffType !== 'remove') {
-      const childComment = render(node.children, [...path, node.name]);
-      return [...acc, childComment];
-    }
-    const propertyPath = [...path, node.name].join('.');
-    const describe = getDescribe(node, propertyPath);
-    if (describe === '') {
-      return acc;
-    }
-    return [...acc, describe];
-  }, []).join('\n');
-};
+const render = (parsedArray, path) => parsedArray.reduce((acc, node) => {
+  if (node.children.length > 0 && node.diffType !== 'add' && node.diffType !== 'remove') {
+    const childComment = render(node.children, [...path, node.name]);
+    return [...acc, childComment];
+  }
+  const propertyPath = [...path, node.name].join('.');
+  const describe = getDescribe(node, propertyPath);
+  if (describe === '') {
+    return acc;
+  }
+  return [...acc, describe];
+}, []).join('\n');
 
 export default (parsedArray) => render(parsedArray, []);

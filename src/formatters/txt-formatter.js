@@ -12,7 +12,7 @@ const stringify = (value, deep) => {
   return `{\n${currentShift}${shift}${result}\n${currentShift}}`;
 };
 
-const convertDiffTypeToSymbol = diffType => {
+const convertDiffTypeToSymbol = (diffType) => {
   switch (diffType) {
     case 'add':
       return '  + ';

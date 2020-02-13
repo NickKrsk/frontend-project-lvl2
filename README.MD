@@ -3,4 +3,6 @@
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/24554eec2708a5ddb8b1/test_coverage)](https://codeclimate.com/github/NickKrsk/frontend-project-lvl2/test_coverage)
 
+![Node.js CI](https://github.com/NickKrsk/frontend-project-lvl2/workflows/Node.js%20CI/badge.svg)
+
 https://asciinema.org/a/CZtRZtPNrapSUHwXXsO7h1aW8

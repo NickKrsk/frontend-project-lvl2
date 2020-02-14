@@ -23,6 +23,7 @@ link:
 
 test:
 	npm test
+
 testWatch:
 	npx jest --watch
 
@@ -31,6 +32,3 @@ lint:
 
 test-coverage:
   npm test -- --coverage
-	
-
-	gendiff '/home/nikita/frontend-project-lvl2/__fixtures__/before.json' '/home/nikita/frontend-project-lvl2/__fixtures__/after.json'

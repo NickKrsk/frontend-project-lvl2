@@ -12,7 +12,7 @@ const parse = (objBefore, objAfter) => {
     };
 
     if (!_.has(objBefore, key)) {
-      // 1. key is not found in data1
+      // 1. key was not found in data1
       const valueAfter = objAfter[key];
       node.valueAfter = valueAfter;
       node.diffType = 'add';
@@ -21,7 +21,7 @@ const parse = (objBefore, objAfter) => {
         node.children = parse(valueAfter, valueAfter);
       }
     } else if (!_.has(objAfter, key)) {
-      // 2. key is not found in data2`;
+      // 2. key was not found in data2`;
       const valueBefore = objBefore[key];
       node.valueBefore = valueBefore;
       node.diffType = 'remove';
@@ -29,8 +29,7 @@ const parse = (objBefore, objAfter) => {
         node.children = parse(valueBefore, valueBefore);
       }
     } else {
-      // 3. key is found in both objects
-      // key a different in data1 and data2`);
+      // 3. key was found in both objects
       const valueAfter = objAfter[key];
       const valueBefore = objBefore[key];
 
@@ -38,7 +37,6 @@ const parse = (objBefore, objAfter) => {
       node.valueBefore = valueBefore;
 
       if (typeof (valueAfter) !== 'object' && typeof (valueAfter) !== 'object') {
-        // flat
         node.diffType = valueAfter === valueBefore ? 'equals' : 'changed';
       } else if (typeof (valueBefore) === 'object' && typeof (valueAfter) === 'object') {
         node.diffType = 'deep';

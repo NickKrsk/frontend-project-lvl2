@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "build": "cross-env NODE_ENV=production babel src --out-dir dist --source-maps inline",
     "prepublishOnly": "npm run build"
   },
   "bin": {
@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/NickKrsk/frontend-project-lvl2#readme",
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/node": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^25.1.0",
     "cross-env": "^7.0.0",

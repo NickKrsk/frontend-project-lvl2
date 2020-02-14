@@ -19,7 +19,7 @@ const mappingFormat = {
   json: jsonRender,
 };
 
-export default (path1, path2, fileType, format = 'txt') => {
+export default (path1, path2, fileType = 'json', format = 'txt') => {
   const dataBefore = fs.readFileSync(path1, 'utf8');
   const dataAfter = fs.readFileSync(path2, 'utf8');
 

@@ -23,9 +23,13 @@ https://asciinema.org/a/7JMpsLAT2jqPAsQZnMBMgN5bw
 https://asciinema.org/a/NHdFfFj6L0EOmpeVyKXhEur52
 
 4. Пример сравнения двух вложенных файлов JSON
+
     4.1. Вывод в текстовом формате:  https://asciinema.org/a/IUzoawqSxYVQ6vfIsAnWuUTBH
+
     4.2. Вывод в plain формате: https://asciinema.org/a/olcaSL1nMXm1Jgfr9wtgfWgeT
+
     4.3. Вывод в формате JSON: https://asciinema.org/a/tkZeJuxgzYUNEfwWT7RMj7C88
+
 
 5. Пример сравнения двух вложенных файлов ini:
 https://asciinema.org/a/Y02nOKrsePsx4mAKyiDByEJXa

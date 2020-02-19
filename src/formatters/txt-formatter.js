@@ -1,11 +1,13 @@
+import _ from 'lodash';
+
 const shift = '    ';
 
 const stringify = (value, deep) => {
   const currentShift = shift.repeat(deep);
-  if (typeof (value) !== 'object') {
+  if (!_.isObject(value)) {
     return value;
   }
-  const result = Object.keys(value).sort().reduce((acc, key) => {
+  const result = _.keys(value).sort().reduce((acc, key) => {
     const res = value[key];
     return [...acc, `${key}: ${res}`];
   }, []).join('\n');

@@ -10,8 +10,8 @@ const compareObjects = (objBefore, objAfter) => {
     return [];
   }
 
-  const allKeys = _.union(_.keys(objBefore), _.keys(objAfter));
-  return allKeys.sort().reduce((acc, key) => {
+  const keys = _.union(_.keys(objBefore), _.keys(objAfter));
+  return keys.sort().reduce((acc, key) => {
     const node = {
       name: key,
     };

@@ -1,8 +1,10 @@
+import _ from 'lodash';
+
 const stringify = (value) => {
-  if (typeof (value) !== 'object') {
-    return value;
+  if (_.isObject(value)) {
+    return '[complex value]';
   }
-  return '[complex value]';
+  return value;
 };
 
 const getDescribe = (node, propertyPath) => {

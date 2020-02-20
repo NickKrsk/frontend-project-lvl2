@@ -6,7 +6,7 @@ import plainRender from './formatters/plain-formatter';
 import jsonRender from './formatters/json-formatter';
 
 const compareObjects = (objBefore, objAfter) => {
-  if (typeof (objBefore) !== 'object' || typeof (objAfter) !== 'object') {
+  if (!_.isObject(objBefore) || !_.isObject(objAfter)) {
     return [];
   }
 

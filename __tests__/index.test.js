@@ -6,15 +6,17 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 const readFileSync = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
 const cases = [
-  [getFixturePath('beforeDeep.json'), getFixturePath('afterDeep.json'), 'resultDeep.txt', 'json', 'txt'],
-  [getFixturePath('beforeDeep.ini'), getFixturePath('afterDeep.ini'), 'resultDeep.txt', 'ini', 'txt'],
-  [getFixturePath('beforeDeep.yml'), getFixturePath('afterDeep.yml'), 'resultDeep.txt', 'yml', 'txt'],
-  [getFixturePath('beforeDeep.json'), getFixturePath('afterDeep.json'), 'resultPlain.txt', 'json', 'plain'],
-  [getFixturePath('beforeDeep.json'), getFixturePath('afterDeep.json'), 'resultJSON.txt', 'json', 'json'],
+  ['json', 'txt', 'result.txt'],
+  ['ini', 'txt', 'result.txt'],
+  ['yml', 'txt', 'result.txt'],
+  ['json', 'plain', 'result-plain.txt'],
+  ['json', 'json', 'result-json.txt'],
 ];
 
-test.each(cases)('Compare', (pathToFile1, pathToFile2, pathToResult, fileType, format) => {
+test.each(cases)('Compare', (extension, format, pathToResult) => {
   const expectedResult = readFileSync(pathToResult);
-  const result = compareFiles(pathToFile1, pathToFile2, fileType, format);
+  const pathToFile1 = getFixturePath(`before.${extension}`);
+  const pathToFile2 = getFixturePath(`after.${extension}`);
+  const result = compareFiles(pathToFile1, pathToFile2, format);
   expect(result).toEqual(expectedResult);
 });

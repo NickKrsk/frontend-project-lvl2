@@ -22,6 +22,24 @@ const getDiffType = (valueBefore, valueAfter) => {
   return 'changed';
 };
 
+const getChildren = (objBefore, objAfter, key) => {
+  const valueBefore = objBefore[key];
+  const valueAfter = objAfter[key];
+
+  if (!_.has(objBefore, key)) {
+    // 1. key was not found in data1 (add)
+    return compareObjects(valueAfter, valueAfter);
+  }
+
+  if (!_.has(objAfter, key)) {
+    // 2. key was not found in data2` (remove);
+    return compareObjects(valueBefore, valueBefore);
+  }
+
+  // 3. key was found in both objects
+  return compareObjects(valueBefore, valueAfter);
+};
+
 const compareObjects = (objBefore, objAfter) => {
   if (!_.isObject(objBefore) || !_.isObject(objAfter)) {
     return [];
@@ -32,19 +50,7 @@ const compareObjects = (objBefore, objAfter) => {
     const valueBefore = objBefore[key];
     const valueAfter = objAfter[key];
     const diffType = getDiffType(valueBefore, valueAfter);
-    if (!_.has(objBefore, key)) {
-      // 1. key was not found in data1 (add)
-      const children = compareObjects(valueAfter, valueAfter);
-      //return [...acc, node];
-    }
-
-    if (!_.has(objAfter, key)) {
-      // 2. key was not found in data2` (remove);
-      const children = compareObjects(valueBefore, valueBefore);
-      //return [...acc, node];
-    }
-    // 3. key was found in both objects
-    const children = compareObjects(valueBefore, valueAfter);
+    const children = getChildren(objBefore, objAfter, key);
 
     const node = {
       name: key,

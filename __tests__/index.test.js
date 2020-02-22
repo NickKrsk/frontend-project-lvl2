@@ -10,7 +10,7 @@ const cases = [
   ['ini', 'txt', 'result.txt'],
   ['yml', 'txt', 'result.txt'],
   ['json', 'plain', 'result-plain.txt'],
- // ['json', 'json', 'result-json.txt'],
+  // ['json', 'json', 'result-json.txt'],
 ];
 
 test.each(cases)('Compare', (extension, format, pathToResult) => {

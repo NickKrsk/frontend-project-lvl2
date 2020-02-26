@@ -46,7 +46,7 @@ const compareObjects = (objBefore, objAfter) => {
   }
 
   const keys = _.union(_.keys(objBefore), _.keys(objAfter)).sort();
-  return keys.reduce((acc, key) => {
+  return keys.map((key) => {
     const valueBefore = objBefore[key];
     const valueAfter = objAfter[key];
     const diffType = getDiffType(valueBefore, valueAfter);
@@ -59,8 +59,8 @@ const compareObjects = (objBefore, objAfter) => {
       diffType,
       children,
     };
-    return [...acc, node];
-  }, []);
+    return node;
+  });
 };
 
 const renders = {

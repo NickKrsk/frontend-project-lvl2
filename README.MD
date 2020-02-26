@@ -45,3 +45,5 @@ https://github.com/Hexlet/hexlet-slack-archive/wiki/%5B2017-11-11%5D-%D0%BE%D0%B
 
 
 https://ru.hexlet.io/pages/principles
+
+https://ru.hexlet.io/courses/js-polymorphism/lessons/dispatch-functions-by-key/theory_unit

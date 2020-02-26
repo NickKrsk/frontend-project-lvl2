@@ -47,6 +47,33 @@ const compareObjects = (objBefore, objAfter) => {
 
   const keys = _.union(_.keys(objBefore), _.keys(objAfter)).sort();
   return keys.map((key) => {
+    if (!_.has(objBefore, key)) {
+      // 1. key was not found in data1 (add)
+      const valueAfter = objAfter[key];
+      const node = {
+        name: key,
+        valueBefore: '',
+        valueAfter,
+        diffType: 'add',
+        children: [],
+      };
+      return node;
+    }
+
+    if (!_.has(objAfter, key)) {
+      // 2. key was not found in data2` (remove);
+      const valueBefore = objBefore[key];
+      const node = {
+        name: key,
+        valueBefore,
+        valueAfter: '',
+        diffType: 'remove',
+        children: [],
+      };
+      return node;
+    }
+
+
     const valueBefore = objBefore[key];
     const valueAfter = objAfter[key];
     const diffType = getDiffType(valueBefore, valueAfter);

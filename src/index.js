@@ -15,24 +15,22 @@ const compareObjects = (objBefore, objAfter) => {
   return keys.map((key) => {
     if (!_.has(objBefore, key)) {
       // 1. key was not found in data1 (add)
-      const node = {
+      return {
         key,
         valueBefore: '',
         valueAfter: objAfter[key],
         diffType: 'add',
       };
-      return node;
     }
 
     if (!_.has(objAfter, key)) {
       // 2. key was not found in data2` (remove);
-      const node = {
+      return {
         key,
         valueBefore: objBefore[key],
         valueAfter: '',
         diffType: 'remove',
       };
-      return node;
     }
 
     const valueBefore = objBefore[key];
@@ -41,33 +39,30 @@ const compareObjects = (objBefore, objAfter) => {
     if (_.isObject(valueBefore) && _.isObject(valueAfter)) {
       // 3. has children
       const children = compareObjects(valueBefore, valueAfter);
-      const node = {
+      return {
         key,
         valueBefore,
         valueAfter,
         diffType: 'deep',
         children,
       };
-      return node;
     }
 
     if (valueBefore === valueAfter) {
-      const node = {
+      return {
         key,
         valueBefore,
         valueAfter,
         diffType: 'same',
       };
-      return node;
     }
 
-    const node = {
+    return {
       key,
       valueBefore,
       valueAfter,
       diffType: 'changed',
     };
-    return node;
   });
 };
 

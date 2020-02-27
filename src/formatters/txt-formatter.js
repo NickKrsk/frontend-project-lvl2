@@ -3,46 +3,45 @@ import _ from 'lodash';
 const shift = '    ';
 
 const stringify = (value, deep) => {
-  const currentShift = shift.repeat(deep);
   if (!_.isObject(value)) {
     return value;
   }
-  const result = _.keys(value).sort().reduce((acc, key) => {
+  const result = _.keys(value).map((key) => {
     const res = value[key];
-    return [...acc, `${key}: ${res}`];
-  }, []).join('\n');
+    return `${key}: ${res}`;
+  }).join('\n');
+  const currentShift = shift.repeat(deep);
   return `{\n${currentShift}${shift}${result}\n${currentShift}}`;
 };
 
-const convertDiffTypeToSymbol = (diffType) => {
-  switch (diffType) {
-    case 'add':
-      return '  + ';
-    case 'remove':
-      return '  - ';
-    default:
-      return '    ';
-  }
+const diffSymbols = {
+  add: '  + ',
+  remove: '  - ',
+  same: shift,
 };
 
 const render = (parsedArray, deep = 0) => {
-  const currentShift = shift.repeat(deep);
-  const resultArray = parsedArray.map((acc, node) => {
-    const diffSymbol = convertDiffTypeToSymbol(node.diffType);
-    if (_.has(node, 'children') && node.children.length > 0) {
-      const deepValue = render(node.children, deep + 1);
-      return [...acc, `${currentShift}${diffSymbol}${node.name}: {\n${deepValue}\n${shift}${currentShift}}`];
+  const resultArray = parsedArray.reduce((acc, node) => {
+    if (_.has(node, 'children')) {
+      const currentShift = shift.repeat(deep + 1);
+      const value = render(node.children, deep + 1);
+      return [...acc, `${currentShift}${node.key}: {\n${value}\n${currentShift}}`];// ${diffSymbol}
+    }
+    const currentShift = shift.repeat(deep);
+
+    if (node.diffType === 'changed') {
+      const valueBefore = stringify(node.valueBefore, deep + 1);
+      const valueAfter = stringify(node.valueAfter, deep + 1);
+      return [
+        ...acc,
+        `${currentShift}${diffSymbols.remove}${node.key}: ${valueBefore}`,
+        `${currentShift}${diffSymbols.add}${node.key}: ${valueAfter}`,
+      ];
     }
     const value = node.diffType === 'remove' ? node.valueBefore : node.valueAfter;
-    const strValue = stringify(value);
-
-    if (node.diffType !== 'changed') {
-      return [...acc, `${currentShift}${diffSymbol}${node.name}: ${strValue}`];
-    }
-    const valueBefore = stringify(node.valueBefore, deep + 1);
-    const valueAfter = stringify(node.valueAfter, deep + 1);
-    return [...acc, `${currentShift}  - ${node.name}: ${valueBefore}`,
-      `${currentShift}  + ${node.name}: ${valueAfter}`];
+    const strValue = stringify(value, deep + 1);
+    const diffSymbol = diffSymbols[node.diffType];
+    return [...acc, `${currentShift}${diffSymbol}${node.key}: ${strValue}`];
   }, []);
 
   const resultStr = resultArray.join('\n');

@@ -7,10 +7,10 @@ const readFileSync = (filename) => fs.readFileSync(getFixturePath(filename), 'ut
 
 const cases = [
   ['json', 'txt', 'result.txt'],
- /* ['ini', 'txt', 'result.txt'],
+  ['ini', 'txt', 'result.txt'],
   ['yml', 'txt', 'result.txt'],
   ['json', 'plain', 'result-plain.txt'],
-  ['json', 'json', 'result-json.txt'],*/
+  ['json', 'json', 'result-json.txt'],
 ];
 
 test.each(cases)('Compare', (extension, format, pathToResult) => {
@@ -18,6 +18,5 @@ test.each(cases)('Compare', (extension, format, pathToResult) => {
   const pathToFile1 = getFixturePath(`before.${extension}`);
   const pathToFile2 = getFixturePath(`after.${extension}`);
   const result = compareFiles(pathToFile1, pathToFile2, format);
-  console.log(result);
   expect(result).toEqual(expectedResult);
 });

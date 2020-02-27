@@ -23,11 +23,11 @@ const getDescribe = (node, propertyPath) => {
 };
 
 const render = (parsedArray, path) => parsedArray.reduce((acc, node) => {
-  if (node.children.length > 0 && node.diffType !== 'add' && node.diffType !== 'remove') {
-    const childComment = render(node.children, [...path, node.name]);
+  if (_.has(node, 'children')) {
+    const childComment = render(node.children, [...path, node.key]);
     return [...acc, childComment];
   }
-  const propertyPath = [...path, node.name].join('.');
+  const propertyPath = [...path, node.key].join('.');
   const describe = getDescribe(node, propertyPath);
   if (describe === '') {
     return acc;

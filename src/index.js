@@ -6,40 +6,6 @@ import txtRender from './formatters/txt-formatter';
 import plainRender from './formatters/plain-formatter';
 import jsonRender from './formatters/json-formatter';
 
-const getDiffType = (valueBefore, valueAfter) => {
-  if (valueBefore === undefined) {
-    return 'add';
-  }
-  if (valueAfter === undefined) {
-    return 'remove';
-  }
-  if (!_.isObject(valueBefore) && !_.isObject(valueAfter)) {
-    return valueAfter === valueBefore ? 'equals' : 'changed';
-  }
-  if (_.isObject(valueBefore) && _.isObject(valueAfter)) {
-    return 'deep';
-  }
-  return 'changed';
-};
-
-const getChildren = (objBefore, objAfter, key) => {
-  const valueBefore = objBefore[key];
-  const valueAfter = objAfter[key];
-
-  if (!_.has(objBefore, key)) {
-    // 1. key was not found in data1 (add)
-    return compareObjects(valueAfter, valueAfter);
-  }
-
-  if (!_.has(objAfter, key)) {
-    // 2. key was not found in data2` (remove);
-    return compareObjects(valueBefore, valueBefore);
-  }
-
-  // 3. key was found in both objects
-  return compareObjects(valueBefore, valueAfter);
-};
-
 const compareObjects = (objBefore, objAfter) => {
   if (!_.isObject(objBefore) || !_.isObject(objAfter)) {
     return [];
@@ -49,42 +15,57 @@ const compareObjects = (objBefore, objAfter) => {
   return keys.map((key) => {
     if (!_.has(objBefore, key)) {
       // 1. key was not found in data1 (add)
-      const valueAfter = objAfter[key];
       const node = {
         name: key,
         valueBefore: '',
-        valueAfter,
+        valueAfter: objAfter[key],
         diffType: 'add',
-        children: [],
       };
       return node;
     }
 
     if (!_.has(objAfter, key)) {
       // 2. key was not found in data2` (remove);
-      const valueBefore = objBefore[key];
       const node = {
         name: key,
-        valueBefore,
+        valueBefore: objBefore[key],
         valueAfter: '',
         diffType: 'remove',
-        children: [],
       };
       return node;
     }
 
-
     const valueBefore = objBefore[key];
     const valueAfter = objAfter[key];
-    const diffType = getDiffType(valueBefore, valueAfter);
-    const children = getChildren(objBefore, objAfter, key);
+
+    if (_.isObject(valueBefore) && _.isObject(valueAfter)) {
+      // 3. has children
+      const children = compareObjects(valueBefore, valueAfter);
+      const node = {
+        name: key,
+        valueBefore,
+        valueAfter,
+        diffType: 'deep',
+        children,
+      };
+      return node;
+    }
+
+    if (valueBefore === valueAfter) {
+      const node = {
+        name: key,
+        valueBefore,
+        valueAfter,
+        diffType: 'equals',
+      };
+      return node;
+    }
 
     const node = {
       name: key,
       valueBefore,
       valueAfter,
-      diffType,
-      children,
+      diffType: 'changed',
     };
     return node;
   });

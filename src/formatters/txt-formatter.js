@@ -27,9 +27,9 @@ const convertDiffTypeToSymbol = (diffType) => {
 
 const render = (parsedArray, deep = 0) => {
   const currentShift = shift.repeat(deep);
-  const resultArray = parsedArray.reduce((acc, node) => {
+  const resultArray = parsedArray.map((acc, node) => {
     const diffSymbol = convertDiffTypeToSymbol(node.diffType);
-    if (node.children.length > 0) {
+    if (_.has(node, 'children') && node.children.length > 0) {
       const deepValue = render(node.children, deep + 1);
       return [...acc, `${currentShift}${diffSymbol}${node.name}: {\n${deepValue}\n${shift}${currentShift}}`];
     }

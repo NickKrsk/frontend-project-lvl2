@@ -7,18 +7,13 @@ import plainRender from './formatters/plain-formatter';
 import jsonRender from './formatters/json-formatter';
 
 const compareObjects = (objBefore, objAfter) => {
-  if (!_.isObject(objBefore) || !_.isObject(objAfter)) {
-    return [];
-  }
-
   const keys = _.union(_.keys(objBefore), _.keys(objAfter)).sort();
   return keys.map((key) => {
     if (!_.has(objBefore, key)) {
       // 1. key was not found in data1 (add)
       return {
         key,
-        valueBefore: '',
-        valueAfter: objAfter[key],
+        value: objAfter[key],
         diffType: 'add',
       };
     }
@@ -27,8 +22,7 @@ const compareObjects = (objBefore, objAfter) => {
       // 2. key was not found in data2` (remove);
       return {
         key,
-        valueBefore: objBefore[key],
-        valueAfter: '',
+        value: objBefore[key],
         diffType: 'remove',
       };
     }
@@ -41,9 +35,6 @@ const compareObjects = (objBefore, objAfter) => {
       const children = compareObjects(valueBefore, valueAfter);
       return {
         key,
-        valueBefore,
-        valueAfter,
-        diffType: 'deep',
         children,
       };
     }
@@ -51,8 +42,7 @@ const compareObjects = (objBefore, objAfter) => {
     if (valueBefore === valueAfter) {
       return {
         key,
-        valueBefore,
-        valueAfter,
+        value: valueBefore,
         diffType: 'same',
       };
     }

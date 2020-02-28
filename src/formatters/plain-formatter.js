@@ -7,19 +7,11 @@ const stringify = (value) => {
   return value;
 };
 
-const getDescribe = (node, propertyPath) => {
-  const valueBefore = stringify(node.valueBefore);
-  const valueAfter = stringify(node.valueAfter);
-  switch (node.diffType) {
-    case 'add':
-      return `Property '${propertyPath}' was added with value: ${valueAfter}`;
-    case 'remove':
-      return `Property '${propertyPath}' was deleted`;
-    case 'changed':
-      return `Property '${propertyPath}' was changed from ${valueBefore} to ${valueAfter}`;
-    default:
-      return '';
-  }
+const describers = {
+  add: (propertyPath, node) => `Property '${propertyPath}' was added with value: ${stringify(node.value)}`,
+  remove: (propertyPath) => `Property '${propertyPath}' was deleted`,
+  changed: (propertyPath, node) => `Property '${propertyPath}' was changed from ${stringify(node.valueBefore)} to ${stringify(node.valueAfter)}`,
+  same: () => '',
 };
 
 const render = (parsedArray, path) => parsedArray.reduce((acc, node) => {
@@ -28,7 +20,7 @@ const render = (parsedArray, path) => parsedArray.reduce((acc, node) => {
     return [...acc, childComment];
   }
   const propertyPath = [...path, node.key].join('.');
-  const describe = getDescribe(node, propertyPath);
+  const describe = describers[node.diffType](propertyPath, node);
   if (describe === '') {
     return acc;
   }

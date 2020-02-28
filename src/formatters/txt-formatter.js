@@ -38,8 +38,7 @@ const render = (parsedArray, deep = 0) => {
         `${currentShift}${diffSymbols.add}${node.key}: ${valueAfter}`,
       ];
     }
-    const value = node.diffType === 'remove' ? node.valueBefore : node.valueAfter;
-    const strValue = stringify(value, deep + 1);
+    const strValue = stringify(node.value, deep + 1);
     const diffSymbol = diffSymbols[node.diffType];
     return [...acc, `${currentShift}${diffSymbol}${node.key}: ${strValue}`];
   }, []);

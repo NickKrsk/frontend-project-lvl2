@@ -6,10 +6,7 @@ const stringify = (value, deep) => {
   if (!_.isObject(value)) {
     return value;
   }
-  const result = _.keys(value).map((key) => {
-    const res = value[key];
-    return `${key}: ${res}`;
-  }).join('\n');
+  const result = _.keys(value).map((key) => `${key}: ${value[key]}`).join('\n');
   const currentShift = shift.repeat(deep);
   return `{\n${currentShift}${shift}${result}\n${currentShift}}`;
 };

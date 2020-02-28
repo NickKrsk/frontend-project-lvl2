@@ -6,7 +6,7 @@ import txtRender from './formatters/txt-formatter';
 import plainRender from './formatters/plain-formatter';
 import jsonRender from './formatters/json-formatter';
 
-const compareObjects = (objBefore, objAfter) => {
+const createAST = (objBefore, objAfter) => {
   const keys = _.union(_.keys(objBefore), _.keys(objAfter)).sort();
   return keys.map((key) => {
     if (!_.has(objBefore, key)) {
@@ -32,7 +32,7 @@ const compareObjects = (objBefore, objAfter) => {
 
     if (_.isObject(valueBefore) && _.isObject(valueAfter)) {
       // 3. has children
-      const children = compareObjects(valueBefore, valueAfter);
+      const children = createAST(valueBefore, valueAfter);
       return {
         key,
         children,
@@ -74,5 +74,5 @@ export default (path1, path2, format = 'txt') => {
   const objAfter = parse(dataAfter, extAfter);
 
   const render = renders[format];
-  return render(compareObjects(objBefore, objAfter));
+  return render(createAST(objBefore, objAfter));
 };

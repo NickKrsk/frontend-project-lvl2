@@ -36,6 +36,7 @@ const createAST = (objBefore, objAfter) => {
       return {
         key,
         children,
+        diffType: 'deep',
       };
     }
 

@@ -11,40 +11,35 @@ const stringify = (value, deep) => {
   return `{\n${currentShift}${shift}${result}\n${currentShift}}`;
 };
 
-const diffSymbols = {
-  add: '  + ',
-  remove: '  - ',
-  same: shift,
-};
-
-const render = (parsedArray, deep = 0) => {
-  const resultArray = parsedArray.reduce((acc, node) => {
-    if (_.has(node, 'children')) {
-      const currentShift = shift.repeat(deep + 1);
-      const value = render(node.children, deep + 1);
-      return [...acc, `${currentShift}${node.key}: {\n${value}\n${currentShift}}`];// ${diffSymbol}
-    }
+const mapNode = {
+  deep: (node, deep) => {
+    const currentShift = shift.repeat(deep + 1);
+    const value = render(node.children, deep + 1);
+    return `${currentShift}${node.key}: {\n${value}\n${currentShift}}`;
+  },
+  changed: (node, deep) => {
     const currentShift = shift.repeat(deep);
-
-    if (node.diffType === 'changed') {
-      const valueBefore = stringify(node.valueBefore, deep + 1);
-      const valueAfter = stringify(node.valueAfter, deep + 1);
-      return [
-        ...acc,
-        `${currentShift}${diffSymbols.remove}${node.key}: ${valueBefore}`,
-        `${currentShift}${diffSymbols.add}${node.key}: ${valueAfter}`,
-      ];
-    }
+    const valueBefore = stringify(node.valueBefore, deep + 1);
+    const valueAfter = stringify(node.valueAfter, deep + 1);
+    return `${currentShift}  - ${node.key}: ${valueBefore}\n${currentShift}  + ${node.key}: ${valueAfter}`;
+  },
+  add: (node, deep) => {
+    const currentShift = shift.repeat(deep);
     const strValue = stringify(node.value, deep + 1);
-    const diffSymbol = diffSymbols[node.diffType];
-    return [...acc, `${currentShift}${diffSymbol}${node.key}: ${strValue}`];
-  }, []);
-
-  const resultStr = resultArray.join('\n');
-  return resultStr;
+    return `${currentShift}  + ${node.key}: ${strValue}`;
+  },
+  remove: (node, deep) => {
+    const currentShift = shift.repeat(deep);
+    const strValue = stringify(node.value, deep + 1);
+    return `${currentShift}  - ${node.key}: ${strValue}`;
+  },
+  same: (node, deep) => {
+    const currentShift = shift.repeat(deep + 1);
+    const strValue = stringify(node.value, deep + 1);
+    return `${currentShift}${node.key}: ${strValue}`;
+  },
 };
 
-export default (parsedArray) => {
-  const result = render(parsedArray);
-  return `{\n${result}\n}`;
-};
+const render = (ast, deep = 0) => ast.map((node) => mapNode[node.diffType](node, deep)).join('\n');
+
+export default (ast) => `{\n${render(ast)}\n}`;

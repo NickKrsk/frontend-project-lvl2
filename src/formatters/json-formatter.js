@@ -1,2 +1,2 @@
 
-export default (parsedArray) => JSON.stringify(parsedArray);
+export default (ast) => JSON.stringify(ast);

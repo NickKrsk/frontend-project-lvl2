@@ -18,5 +18,6 @@ test.each(cases)('Compare', (extension, format, pathToResult) => {
   const pathToFile1 = getFixturePath(`before.${extension}`);
   const pathToFile2 = getFixturePath(`after.${extension}`);
   const result = compareFiles(pathToFile1, pathToFile2, format);
+  //console.log(result);
   expect(result).toEqual(expectedResult);
 });

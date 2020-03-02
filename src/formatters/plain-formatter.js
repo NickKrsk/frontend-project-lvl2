@@ -7,24 +7,18 @@ const stringify = (value) => {
   return value;
 };
 
-const describers = {
-  add: (propertyPath, node) => `Property '${propertyPath}' was added with value: ${stringify(node.value)}`,
-  remove: (propertyPath) => `Property '${propertyPath}' was deleted`,
-  changed: (propertyPath, node) => `Property '${propertyPath}' was changed from ${stringify(node.valueBefore)} to ${stringify(node.valueAfter)}`,
-  same: () => '',
+const getPropertyPath = (node, path) => [...path, node.key].join('.');
+
+const mapNode = {
+  deep: (node, path) => render(node.children, [...path, node.key]),
+  add: (node, path) => `Property '${getPropertyPath(node, path)}' was added with value: ${stringify(node.value)}`,
+  remove: (node, path) => `Property '${getPropertyPath(node, path)}' was deleted`,
+  changed: (node, path) => `Property '${getPropertyPath(node, path)}' was changed from ${stringify(node.valueBefore)} to ${stringify(node.valueAfter)}`,
+  same: () => null,
 };
 
-const render = (parsedArray, path) => parsedArray.reduce((acc, node) => {
-  if (_.has(node, 'children')) {
-    const childComment = render(node.children, [...path, node.key]);
-    return [...acc, childComment];
-  }
-  const propertyPath = [...path, node.key].join('.');
-  const describe = describers[node.diffType](propertyPath, node);
-  if (describe === '') {
-    return acc;
-  }
-  return [...acc, describe];
-}, []).join('\n');
+const render = (parsedArray, path) => parsedArray.map((node) => mapNode[node.diffType](node, path))
+  .filter((el) => el)
+  .join('\n');
 
-export default (parsedArray) => render(parsedArray, []);
+export default (ast) => render(ast, []);
